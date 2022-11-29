@@ -1,6 +1,24 @@
 import numpy as np
 from numpy import sin, cos
 class Tensor_form_scara():
+    '''
+    This is an instance to solve all the coefficients of the tensor model for the movement equation for a Scara robot
+    We will use this variables to instance this clase:
+    - ac1 = Distance between Z and mass center 1
+    - a1 = Lenght of link 1
+    - ac2 = Distance from the joint of rotation that joins links 1 and 2 and the mass center 2
+    - a2 = Lenght of link 2
+    - m1 = mass of link 1
+    - i1zz = Izz coefficient of the tensor of inertia for link 1
+    - m2 = mass of link 2
+    - i2zz = Izz coefficient of the tensor of inertia for link 2
+    - m3 = mass of link 3
+    - i3zz = Izz coefficient of the tensor of inertia for link 3
+    - th1 = Value of theta 1 angle (in degrees)
+    - th2 = Value of theta 2 angle (in degrees)
+    - th1 = Value of angular velocity for angle 1 (in degrees)
+    - th2 = Value of angular velocity for angle 2 (in degrees)
+    '''
     def __init__(self, ac1, a1, ac2, a2, m1, i1zz, m2, i2zz, m3, i3zz, th1, th2, thv1, thv2):
         self.ac1 = ac1
         self.a1 = a1
@@ -18,6 +36,10 @@ class Tensor_form_scara():
         self.thv2 = np.deg2rad(thv2)
 
     def mass_matrix(self):
+        '''
+        This method will solve of the coefficients of the mass matrix and then will print it in console.
+        It uses the instance values provided in the __init__ method
+        '''
         m11 = (self.m1*self.ac1**2)+(self.m2+self.m3)*self.a2+(2*self.m3*self.a1*self.a2*cos(self.th2))+(self.m2*self.ac2**2)+(self.m3*self.a2**2)+(
                 2*self.m2*self.a1*self.ac2*cos(self.th2))+(2*self.a1*cos(self.th2*(self.m2*self.ac2+self.m3*self.a2)))+self.i1zz+self.i2zz+self.i3zz
         m12 = (self.m2*self.ac2**2)+(self.m2*self.a1*self.ac2*cos(self.th2))+(self.m3*self.a2**2)+(self.m3*self.a1*self.a2*cos(self.th2))+(
@@ -45,6 +67,10 @@ class Tensor_form_scara():
         print(f'MASS MATRIX:\n {M}')
     
     def kinetics_matrix(self):
+        '''
+        This method will solve of the coefficients of the kinetics matrix and then will print it in console.
+        It uses the instance values provided in the __init__ method
+        '''
         c11 = (-2*self.m2*sin(self.th1)*self.a1*self.ac2)-(2*self.m3*sin(self.th2)*self.a1*self.a2)
         c12 = -(self.m2*sin(self.th2)*self.a1*self.ac2)-(self.m3*sin(self.th2)*self.a1*self.a2)
         c13 = 0
@@ -59,6 +85,10 @@ class Tensor_form_scara():
         print(f'KINETICS MATRIX:\n {C}')
     
     def gravities_matrix(self):
+        '''
+        This method will solve of the coefficients of the gravities matrix and then will print it in console.
+        It uses the instance values provided in the __init__ method
+        '''
         G = np.array([[0],
             [0],
             [-self.m3*9.81],
